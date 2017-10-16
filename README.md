@@ -21,6 +21,5 @@ Repo: https://github.com/Vichoko/evolutionary-guesser-of-words
 ```
 	static String targetWord = "supercalifragilisticoespiralidoso"; // word that represents the max fitness
 	static int populationSize = 1000; // quantity of individuals at each generation; constant
-	static double selectionRate = 0.5; // fraction of individuals that survive to natural selection
 	static double mutationRate = 0.05; // probability of mutation for each gene
 ```
