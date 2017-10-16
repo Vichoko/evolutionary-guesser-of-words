@@ -2,6 +2,11 @@ package darwin;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author Vicente Oyanedel M.
+ *
+ */
 public class Evolution {
 	static String targetWord = "supercalifragilisticoespiralidoso"; // natural
 																	// gene

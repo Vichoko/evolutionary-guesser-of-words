@@ -5,6 +5,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 
+ * @author Vicente Oyanedel M.
+ *
+ */
 public class NaturalSelection {
 
 	public boolean existPerfectIndividual;

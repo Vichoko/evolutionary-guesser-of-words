@@ -2,6 +2,11 @@ package darwin;
 
 import java.util.Arrays;
 
+/**
+ * 
+ * @author Vicente Oyanedel M.
+ *
+ */
 public class Individual {
 	public char[] genes; // in this case a word of 5 characters
 

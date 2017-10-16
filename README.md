@@ -5,6 +5,8 @@ A simple Evolutionary Algorithm to guess any word.
 
 Dev'd with Eclipse 4.6.2 in Windows 10.
 
+Repo: https://github.com/Vichoko/evolutionary-guesser-of-words
+
 ## Dependencies
 
 1. JavaSE-1.8 (or similar)
