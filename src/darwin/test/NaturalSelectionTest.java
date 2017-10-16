@@ -1,4 +1,4 @@
-package darwin;
+package darwin.test;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,9 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import darwin.Individual;
+import darwin.NaturalSelection;
 
 public class NaturalSelectionTest {
 	NaturalSelection ns;
@@ -36,8 +39,8 @@ public class NaturalSelectionTest {
 		assertEquals(ns.getPopulation().get(0), pedro);
 		assertEquals(ns.getPopulation().get(ns.getPopulation().size()-1), maria);
 		
-		assertEquals(pedro.fitness, 4);
-		assertEquals(maria.fitness, 1);
+		assertEquals(pedro.getFitness(), 4);
+		assertEquals(maria.getFitness(), 1);
 	}
 	
 	@Test

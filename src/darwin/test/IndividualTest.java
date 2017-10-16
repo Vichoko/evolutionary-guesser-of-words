@@ -1,7 +1,9 @@
-package darwin;
+package darwin.test;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import darwin.Individual;
 
 public class IndividualTest {
 
