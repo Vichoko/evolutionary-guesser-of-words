@@ -57,4 +57,34 @@ public class NaturalSelectionTest {
 		assertEquals(pop.size(), ns.populationSize);
 	}
 
+	@Test
+	public void rouletteTest() {
+		//after 100000 roulete runs, pedro should be chose more times than maria and rorro and potro.
+		ns.getMaxFitness();
+		int pedroCounter = 0;
+		int mariaCounter = 0;
+		int rorroCounter = 0;
+		int potroCounter = 0;
+		for (int i = 0; i < 10000000; i++) {
+			Individual chosenOne = ns.runRoulette();
+			if (chosenOne.getGenesStr().equals("pedro")) {
+				pedroCounter++;
+			}
+			else if (chosenOne.getGenesStr().equals("maria")) {
+				mariaCounter++;
+			}
+			else if (chosenOne.getGenesStr().equals("rorro")) {
+				rorroCounter++;
+			}
+			else if (chosenOne.getGenesStr().equals("potro")) {
+				potroCounter++;
+			}
+		}
+		//System.out.println("pedro: " + pedroCounter + " rorro: " + rorroCounter + " potro: " + potroCounter + " maria: " + mariaCounter);
+		assertTrue(pedroCounter > mariaCounter);
+		assertTrue(pedroCounter > rorroCounter);
+		assertTrue(pedroCounter > potroCounter);
+		assertTrue(rorroCounter > mariaCounter);
+		assertTrue(potroCounter > mariaCounter);
+	}
 }

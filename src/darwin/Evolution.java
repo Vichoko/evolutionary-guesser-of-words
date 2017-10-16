@@ -12,8 +12,7 @@ public class Evolution {
 																	// gene
 																	// perfection
 	static int populationSize = 1000;
-	static double selectionRate = 0.5;
-	static double mutationRate = 0.05;
+	static double mutationRate = 0.01;
 
 	/**
 	 * Instance variables.
@@ -51,13 +50,12 @@ public class Evolution {
 	public static void main(String[] args) {
 		Evolution evo = new Evolution();
 		NaturalSelection ns = new NaturalSelection(evo.population, targetWord);
-		ns.sortByFitness();
+		ns.getMaxFitness();
 
 		while (!ns.existPerfectIndividual) {
 			// compute new generation
-			ns.selectStronger(selectionRate); // select some, kill the rest
-			ns.matingPhase(mutationRate); // sex time
-			ns.sortByFitness(); // sort by fitness
+			ns.matingPhaseByRoulette(mutationRate); // sex time
+			ns.getMaxFitness(); // calculate fitness of every new individual and get max one
 			evo.genCounter++;
 		}
 		Individual perfectOne = ns.perfectIndividual;

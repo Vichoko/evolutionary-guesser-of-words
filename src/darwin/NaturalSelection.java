@@ -22,6 +22,7 @@ public class NaturalSelection {
 	}
 
 	public int populationSize;
+	public int totalFitness;
 	String perfectGenes;
 
 	/**
@@ -41,41 +42,50 @@ public class NaturalSelection {
 	}
 
 	/**
-	 * Selects the 'selectRate' porcent of the top fitness individuals.
+	 * Pick an individual by roulette.
+	 * Fitness should be calculated before.
+	 * @return Individual picked.
+	 */
+	public Individual runRoulette() {
+	    float runningScore = 0;
+	    float rnd = (float) (Math.random() * this.totalFitness);
+	    for (Individual i : population)
+	    {   
+	        if (    rnd>=runningScore &&
+	                rnd<=runningScore+i.fitness)
+	        {
+	            return i;
+	        }
+	        runningScore+=i.fitness;
+	    }
+	    return null;
+	}
+
+	/**
+	 * updates fitness of every individual, then get max fitness individual.
 	 * 
-	 * @param selectRate
-	 *            Number between 0 and 1, rate of survivors after genocide.
+	 * @return Max fitness individual.
 	 */
-	public void selectStronger(double selectRate) {
-		int lastIndex = (int) Math.ceil((selectRate * populationSize)); // genocide
-		population = new ArrayList<Individual>(population.subList(0, lastIndex));
-		System.out.println("Best fitness is " + population.get(0).getGenesStr() + " with " + population.get(0).fitness);
-	}
-
-	/**
-	 * sorts the population by fitness descending.
-	 */
-	public void sortByFitness() {
+	public Individual getMaxFitness() {
+		updateFitness();
+		double max_fitness = Double.MIN_VALUE;
+		Individual max_fitness_individual = null;
 		for (Individual i : population) {
-			calculateFitness(i);
-		}
-		population.sort(new Comparator<Individual>() { // sort by fitness
-														// descending
-
-			@Override
-			public int compare(Individual o1, Individual o2) {
-				return -(o1.getFitness() - o2.getFitness());
+			if (i.fitness > max_fitness) {
+				max_fitness = i.fitness;
+				max_fitness_individual = i;
 			}
-
-		});
-		if (population.get(0).getGenesStr().equals(perfectGenes)) {
-			existPerfectIndividual = true;
-			perfectIndividual = population.get(0);
 		}
+		if (max_fitness_individual.getGenesStr().equals(perfectGenes)) {
+			existPerfectIndividual = true;
+			perfectIndividual = max_fitness_individual;
+		}
+		System.out.println("Best fitness is " + max_fitness_individual.getGenesStr() + " with " + max_fitness_individual.fitness);
+		return max_fitness_individual;
 	}
 
 	/**
-	 * Grabs pairs of survivors randomly and mate them to create a new child.
+	 * Grabs pairs of survivors by roulette and mate them to create a new child.
 	 * Until the population is recovered; i.e. populationSize childs are
 	 * created.
 	 * 
@@ -83,26 +93,37 @@ public class NaturalSelection {
 	 *            Number between 0 and 1, probability of have a random mutation
 	 *            in a gene.
 	 */
-	public void matingPhase(double mutationRate) {
+	public void matingPhaseByRoulette(double mutationRate) {
 		Random rand = new Random();
 		List<Individual> children = new ArrayList<Individual>();
-		// mate pairs of 25% top races
 
-		assert (population.size() >= 2); // need at least 2 after selection
 		for (int childIndex = 0; childIndex < populationSize;) {
-			int firstParent = rand.nextInt(population.size());
-			int secondParent = firstParent;
-			while (firstParent == secondParent) {
-				// parents must not be the same individual
-				secondParent = rand.nextInt(population.size());
-			}
-
-			children.add(population.get(firstParent).sex(population.get(secondParent), mutationRate));
+			children.add(runRoulette().sex(runRoulette(), mutationRate));
 			childIndex++;
 		}
 		this.updateGeneration(children);
 	}
+	
+	// private methods
+	/**
+	 * replaces the actual population with the new generation of childs.
+	 * 
+	 * @param newGeneration
+	 *            List of child individuals.
+	 */
+	private void updateGeneration(List<Individual> newGeneration) {
+		this.population = newGeneration;
 
+	}
+	
+	private void updateFitness() {
+		totalFitness = 0;
+		for (Individual i : population) {
+			calculateFitness(i);
+			totalFitness += i.fitness;
+		}
+	}
+	
 	/**
 	 * calculates the fitness of the individual, saving the result inside the
 	 * individual fitness field.
@@ -123,14 +144,66 @@ public class NaturalSelection {
 		return fitness;
 	}
 
-	/**
-	 * replaces the actual population with the new generation of childs.
-	 * 
-	 * @param newGeneration
-	 *            List of child individuals.
-	 */
-	private void updateGeneration(List<Individual> newGeneration) {
-		this.population = newGeneration;
+	
 
+	// deprecated because overcost of sorting
+	/**
+	 * Grabs pairs of survivors randomly and mate them to create a new child.
+	 * Until the population is recovered; i.e. populationSize childs are
+	 * created.
+	 * 
+	 * @param mutationRate
+	 *            Number between 0 and 1, probability of have a random mutation
+	 *            in a gene.
+	 */
+	@Deprecated
+	public void matingPhase(double mutationRate) {
+		Random rand = new Random();
+		List<Individual> children = new ArrayList<Individual>();
+		// mate pairs of 25% top races
+
+		assert (population.size() >= 2); // need at least 2 after selection
+		for (int childIndex = 0; childIndex < populationSize;) {
+			int firstParent = rand.nextInt(population.size());
+			int secondParent = firstParent;
+			while (firstParent == secondParent) {
+				// parents must not be the same individual
+				secondParent = rand.nextInt(population.size());
+			}
+
+			children.add(population.get(firstParent).sex(population.get(secondParent), mutationRate));
+			childIndex++;
+		}
+		this.updateGeneration(children);
 	}
+	
+
+	/**
+	 * sorts the population by fitness descending.
+	 */
+	@Deprecated
+	public void sortByFitness() {
+		updateFitness();
+		population.sort(new Comparator<Individual>() { // sort by fitness
+														// descending
+			public int compare(Individual o1, Individual o2) {
+				return -(o1.getFitness() - o2.getFitness());
+			}
+
+		});
+	}
+	
+	/**
+	 * Selects the 'selectRate' porcent of the top fitness individuals.
+	 * 
+	 * @param selectRate
+	 *            Number between 0 and 1, rate of survivors after genocide.
+	 */
+	@Deprecated
+	public void selectStronger(double selectRate) {
+		sortByFitness();
+		int lastIndex = (int) Math.ceil((selectRate * populationSize)); // genocide
+		population = new ArrayList<Individual>(population.subList(0, lastIndex));
+	}
+	
 }

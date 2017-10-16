@@ -110,6 +110,8 @@ public class Individual {
 		return sonGenes;
 	}
 
+	
+
 	/*
 	 * (non-Javadoc)
 	 * 
